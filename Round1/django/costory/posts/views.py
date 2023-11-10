@@ -34,3 +34,11 @@ def post_update(request, post_id):
   else:
     post_form = PostForm(instance=post) # 기존 post 데이터 내용을 담아서 폼 생성
   return render(request, 'posts/post_form.html', {'form': post_form})
+
+def post_delete(request, post_id):
+  post = Post.objects.get(id=post_id)
+  if request.method == 'POST':
+    post.delete()
+    return redirect('post-list')
+
+  return render(request, 'posts/post_confirm_delete.html', {'post':post})
