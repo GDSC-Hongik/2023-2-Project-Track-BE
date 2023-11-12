@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from django.views.generic import CreateView
+from django.views.generic import CreateView,ListView
 from django.urls import reverse
 from .models import Post
 from .forms import PostForm
@@ -27,7 +27,13 @@ class PostCreateView(CreateView):
     template_name = "posts/post_form.html"
     def get_success_url(self):
         return reverse('post-detail',kwargs={'post_id':self.object.id})
-
+class PostListView(ListView):
+    model = Post
+    template_name = 'posts/post_list.html'
+    context_object_name = 'posts'
+    ordering = ['-dt_created']
+    paginate_by = 6
+    page_kwarg = 'page'
 def post_update(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.method=='POST':
