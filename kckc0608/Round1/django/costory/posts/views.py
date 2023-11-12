@@ -1,7 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post
 from django.core.paginator import Paginator
+from django.views import View
+from .models import Post
 from .forms import PostForm
+
+
+class PostCreateView(View):
+  def get(self, request): # get 방식으로 객체 생성 url이 들어오면 이 함수가 실행됨.
+    post_form = PostForm()
+    return render(request, 'posts/post_form.html', {"form": post_form})
+
+  def post(self, request):
+    post_form = PostForm(request.POST)
+    if post_form.is_valid():
+      new_post = post_form.save()
+      return redirect('post-detail', post_id = new_post.id)
+    return render(request, 'posts/post_form.html', {"form": post_form})
 
 # Create your views here.
 def post_list(request):
@@ -18,17 +32,6 @@ def post_list(request):
 def post_detail(request, post_id):
   post = get_object_or_404(Post, id=post_id)
   return render(request, 'posts/post_detail.html', context={"post": post})
-
-
-def post_create(request):
-  if request.method == 'POST':
-    post_form = PostForm(request.POST)
-    if post_form.is_valid():
-      new_post = post_form.save()
-      return redirect('post-detail', post_id = new_post.id)
-  else:
-    post_form = PostForm()
-  return render(request, 'posts/post_form.html', {"form": post_form})
 
 
 def post_update(request, post_id):
