@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 from django.urls import reverse
 from .models import Post
 from .forms import PostForm
@@ -14,17 +13,6 @@ class PostCreateView(CreateView):
     return reverse('post-detail', kwargs={'post_id': self.object.id}) ## 리다이렉트 주소 및 인자 전달
 
 
-# Create your views here.
-# def post_list(request):
-#   posts = Post.objects.all()
-#   paginator = Paginator(posts, 6)
-#   curr_page_number = request.GET.get('page') # get querystring data
-#   if curr_page_number is None:
-#     curr_page_number = 1
-
-#   page = paginator.page(curr_page_number)
-#   return render(request, 'posts/post_list.html', context={"page": page})
-
 class PostListView(ListView):
   model = Post
   template_name = 'posts/post_list.html'
@@ -34,11 +22,16 @@ class PostListView(ListView):
   page_kwarg = 'page'
 
 
+# def post_detail(request, post_id):
+#   post = get_object_or_404(Post, id=post_id)
+#   return render(request, 'posts/post_detail.html', context={"post": post})
 
 
-def post_detail(request, post_id):
-  post = get_object_or_404(Post, id=post_id)
-  return render(request, 'posts/post_detail.html', context={"post": post})
+class PostDetailView(DetailView):
+  model = Post
+  template_name = 'posts/post_detail.html'
+  pk_url_kwarg = 'post_id'
+  context_object_name = 'post'
 
 
 def post_update(request, post_id):
