@@ -1,32 +1,39 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from django.views import View
+from django.views.generic import CreateView, ListView
+from django.urls import reverse
 from .models import Post
 from .forms import PostForm
 
+class PostCreateView(CreateView):
+  model = Post
+  form_class = PostForm
+  template_name = 'posts/post_form.html' # context 는 알아서 "form" 이라는 키워드로 넘겨줌
 
-class PostCreateView(View):
-  def get(self, request): # get 방식으로 객체 생성 url이 들어오면 이 함수가 실행됨.
-    post_form = PostForm()
-    return render(request, 'posts/post_form.html', {"form": post_form})
+  def get_success_url(self) -> str:
+    return reverse('post-detail', kwargs={'post_id': self.object.id}) ## 리다이렉트 주소 및 인자 전달
 
-  def post(self, request):
-    post_form = PostForm(request.POST)
-    if post_form.is_valid():
-      new_post = post_form.save()
-      return redirect('post-detail', post_id = new_post.id)
-    return render(request, 'posts/post_form.html', {"form": post_form})
 
 # Create your views here.
-def post_list(request):
-  posts = Post.objects.all()
-  paginator = Paginator(posts, 6)
-  curr_page_number = request.GET.get('page') # get querystring data
-  if curr_page_number is None:
-    curr_page_number = 1
+# def post_list(request):
+#   posts = Post.objects.all()
+#   paginator = Paginator(posts, 6)
+#   curr_page_number = request.GET.get('page') # get querystring data
+#   if curr_page_number is None:
+#     curr_page_number = 1
 
-  page = paginator.page(curr_page_number)
-  return render(request, 'posts/post_list.html', context={"page": page})
+#   page = paginator.page(curr_page_number)
+#   return render(request, 'posts/post_list.html', context={"page": page})
+
+class PostListView(ListView):
+  model = Post
+  template_name = 'posts/post_list.html'
+  context_object_name = 'posts'
+  ordering = ['-dt_created'] # 최근 작성순으로 정렬 (날짜 역순)
+  paginate_by = 6
+  page_kwarg = 'page'
+
+
 
 
 def post_detail(request, post_id):
