@@ -1,4 +1,4 @@
-### * GDSC Hongik 23-2 프로젝트 트랙 백엔드 WIL 내용입니다. 
+###  다음 내용은 GDSC Hongik 2023-2-Project-Track-BE 에서 배운 내용을 정리한 글입니다. 
 
 # **Web Server Gateway Interface(wsgi)**
 
@@ -59,6 +59,9 @@ Django에서는 함수 기반 뷰(Function-Based Views, FBVs)와 클래스 기�
 
 이처럼 View와 Controller가 따로 존재하므로 프론트앤드와 디자이너가 분업화하기 쉽다. 하지만 Django의 MVT는 웹 애플리케이션에 특화되어 있으며, 개발 속도와 효율성이 중요한 소규모 팀 또는 단일 개발자 프로젝트에 더 적합할 수 있다.
 
+# **ORM**
+
+$migration$
 
 # **마이그레이션**
 
