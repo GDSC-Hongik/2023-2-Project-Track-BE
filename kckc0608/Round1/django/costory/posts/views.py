@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
+from django.http import Http404
 from .forms import PostForm
 
 # Create your views here.
@@ -9,9 +10,8 @@ def post_list(request):
   return render(request, 'posts/post_list.html', context=context)
 
 def post_detail(request, post_id):
-  post = Post.objects.get(id=post_id)
-  context = {"post": post}
-  return render(request, 'posts/post_detail.html', context=context)
+  post = get_object_or_404(Post, id=post_id)
+  return render(request, 'posts/post_detail.html', context={"post": post})
 
 def post_create(request):
   if request.method == 'POST':
@@ -24,7 +24,7 @@ def post_create(request):
   return render(request, 'posts/post_form.html', {"form": post_form})
 
 def post_update(request, post_id):
-  post = Post.objects.get(id=post_id)
+  post = get_object_or_404(Post, id=post_id)
 
   if request.method == 'POST':
     post_form = PostForm(request.POST, instance=post) # 새로운 Post 객체를 만드는 게 아니므로, 기존 인스턴스를 넘겨줌.
@@ -36,7 +36,7 @@ def post_update(request, post_id):
   return render(request, 'posts/post_form.html', {'form': post_form})
 
 def post_delete(request, post_id):
-  post = Post.objects.get(id=post_id)
+  post = get_object_or_404(Post, id=post_id)
   if request.method == 'POST':
     post.delete()
     return redirect('post-list')
