@@ -145,6 +145,8 @@ ACCOUNT_LOGOUT_ON_GET = True # 로그아웃 시, 확인 페이지 없이 바로 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SESSION_REMEMBER = True # 로그인 항상 유지
+# SESSION_COOKIE_AGE = 3600
 
 # Email Settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
