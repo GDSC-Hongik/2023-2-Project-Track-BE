@@ -139,5 +139,9 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+ACCOUNT_SIGNUP_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "index"
+ACCOUNT_LOGOUT_ON_GET = True # 로그아웃 시, 확인 페이지 없이 바로 로그아웃
+
 # Email Settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
