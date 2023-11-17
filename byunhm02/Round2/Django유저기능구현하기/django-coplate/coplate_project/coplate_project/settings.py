@@ -25,7 +25,7 @@ SECRET_KEY = 'vorhyw*g$t5z&vjgn4fcuxbymaj$_!+@46jl!o+10tzw)e3pcy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -50,14 +50,16 @@ INSTALLED_APPS = [
 
 SITE_ID=1
 
+#request는 위에서부터 아래로 통과,response는 아래서 위로 통과
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',#request에 user라는 속성 더해줌
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'coplate.middleware.ProfileSetupMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     
 ]
@@ -143,14 +145,14 @@ AUTHENTICATION_BACKENDS = [
 
 
 #리디렉션 설정
-ACCOUNT_SIGNUP_REDIRECT_URL="index"
+ACCOUNT_SIGNUP_REDIRECT_URL="profile-set"
 LOGIN_REDIRECT_URL="index"
 LOGIN_URL="account_login"
 ACCOUNT_LOGOUT_ON_GET=True #바로 로그아웃 되도록 설정
 ACCOUNT_AUTHENTICATION_METHOD="email"#username이 아니라 email로 로그인 하도록 설정 
 ACCOUNT_EMAIL_REQUIRED=True
 ACCOUNT_USERNAME_REQUIRED=False
-ACCOUNT_SIGNUP_FORM_CLASS="coplate.forms.SignupForm"
+#ACCOUNT_SIGNUP_FORM_CLASS="coplate.forms.SignupForm"
 
 ACCOUNT_SESSION_REMEMBER=True #브라우저 닫아도 로그인 유지
 #SESSION_COOKIE_AGE=3600 #세션쿠키 유지 시간(초단위) ,기본은 2주
@@ -159,7 +161,7 @@ ACCOUNT_PASSWORD_INPUT_RENDER_VALUE=True #폼에 오류나도 입력했던 비�
 #mandatory:이메일 인증을 완료 할 때까지 로그인 할 수 없게 됨.
 #optional: 회원가입 시 인증을 요청하는 이메일이 발송 되지만 이메일 인증을 하지 않아도 로그인을 할 수 있게 됨(디폴트)
 #none:이메일 인증 필요 없고 인증 메일 발송되지 않음 
-ACCOUNT_EMAIL_VARIFICATION="optional"
+#ACCOUNT_EMAIL_VARIFICATION="optional"
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET=True
 #인증 완료 페이지로 리디렉션

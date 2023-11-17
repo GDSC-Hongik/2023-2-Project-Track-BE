@@ -1,6 +1,8 @@
-
-from typing import List
-from django.shortcuts import render
+from re import template
+from typing import Any, List
+from django.db import models
+from django.db.models.query import QuerySet
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from django.views.generic import (
     ListView,
@@ -13,8 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 #from braces.view import LoginRequiredMixin,UserPassesTestMixin
 from allauth.account.models import EmailAddress
 from allauth.account.views import PasswordChangeView
-from coplate.models import Review
-from coplate.forms import ReviewForm
+from coplate.models import Review,User
+from coplate.forms import ReviewForm,ProfileForm
 from coplate.functions import confirmation_required_redirect
 
 # Create your views here.
@@ -87,7 +89,57 @@ class ReviewDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
         review=self.get_object()
         return review.author == user
 
+class ProfileView(DetailView):
+    model=User
+    template_name="coplate/profile.html"
+    pk_url_kwarg="user_id"
+    context_object_name="profile_user"
+    
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        user_id=self.kwargs.get("user_id")
+        context["user_reviews"]=Review.objects.filter(author__id=user_id).order_by("-dt_created")[:4]
+        return context
+    
+class UserReviewListView(ListView):
+    model=Review
+    template_name="coplate/user_review_list.html"
+    context_object_name="user_reviews"
+    paginate_by=4
+    
+    def get_queryset(self):
+        user_id=self.kwargs.get("user_id")
+        return Review.objects.filter(author__id=user_id).order_by("-dt_created")
+    
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        context["profile_user"]=get_object_or_404(User,id=self.kwargs.get("user_id"))
+        return context
+        
+class ProfileSetView(LoginRequiredMixin,UpdateView):
+    model=User
+    form_class=ProfileForm
+    template_name="coplate/profile_set_form.html"
+    
+    def get_object(self, queryset=None):
+        return self.request.user
+    
+    def get_success_url(self):
+        return reverse("index")
+
+class ProfileUpdateView(LoginRequiredMixin,UpdateView):
+    model=User
+    form_class=ProfileForm
+    template_name="coplate/profile_update_form.html"
+    
+    def get_object(self, queryset=None):
+        return self.request.user
+    
+    def get_success_url(self):
+        return reverse("profile",kwargs={"user_id":self.request.user.id})
+    
+        
 class CustomPasswordChangeView(PasswordChangeView):
     #get_success_url:성공적으로 처리되면 어디로 리디렉션 할지 정해주는 함수
     def get_success_url(self):
-        return reverse('index') #오버라이딩: 상속받아 기본 클래스의 속성이나 메소드를 바꾸는것
+        return reverse('profile',kwargs={"user_id":self.request.user.id}) #오버라이딩: 상속받아 기본 클래스의 속성이나 메소드를 바꾸는것
