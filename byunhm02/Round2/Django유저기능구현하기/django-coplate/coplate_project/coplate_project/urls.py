@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 from coplate.views import CustomPasswordChangeView
 
 urlpatterns = [
@@ -36,3 +38,5 @@ urlpatterns = [
         ),
     path("", include('allauth.urls')),
 ]
+urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) #미디어 파일에 대한 요청이 들어오면 미디어 루트 안에 있는 미디어 파일을 돌려주라는 뜻
+

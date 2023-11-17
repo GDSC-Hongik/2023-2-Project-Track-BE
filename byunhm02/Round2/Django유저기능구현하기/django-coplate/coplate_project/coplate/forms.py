@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User,Review
 
 class SignupForm(forms.ModelForm):
     class Meta:
@@ -13,3 +13,19 @@ class SignupForm(forms.ModelForm):
             user.save()
     
     
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model=Review
+        fields=[
+            "title",
+            "restaurant_name",
+            "restaurant_link",
+            "rating",
+            "image1",
+            "image2",
+            "image3",
+            "content",
+        ]
+        widgets={
+            "rating": forms.RadioSelect,
+        }
