@@ -145,6 +145,7 @@ AUTHENTICATION_BACKENDS = [
 #리디렉션 설정
 ACCOUNT_SIGNUP_REDIRECT_URL="index"
 LOGIN_REDIRECT_URL="index"
+LOGIN_URL="account_login"
 ACCOUNT_LOGOUT_ON_GET=True #바로 로그아웃 되도록 설정
 ACCOUNT_AUTHENTICATION_METHOD="email"#username이 아니라 email로 로그인 하도록 설정 
 ACCOUNT_EMAIL_REQUIRED=True

@@ -1,4 +1,4 @@
-from coplate.models import Review
+
 from typing import List
 from django.shortcuts import render
 from django.urls import reverse
@@ -9,8 +9,13 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+#from braces.view import LoginRequiredMixin,UserPassesTestMixin
+from allauth.account.models import EmailAddress
 from allauth.account.views import PasswordChangeView
+from coplate.models import Review
 from coplate.forms import ReviewForm
+from coplate.functions import confirmation_required_redirect
 
 # Create your views here.
 #def index(request):
@@ -32,10 +37,14 @@ class ReviewDetailView(DetailView):
     template_name="coplate/review_detail.html"
     pk_url_kwarg="review_id"
 
-class ReviewCreateView(CreateView):
+#access mixin은 꼭 제네릭 뷰 왼쪽에 써야 함.(코드가 왼쪽에서 오른쪽으로 실행되기 때문)
+class ReviewCreateView(LoginRequiredMixin,UserPassesTestMixin,CreateView):
     model=Review
     form_class=ReviewForm
     template_name="coplate/review_form.html"
+    
+    redirect_unauthenticated_users=True
+    raise_exception=confirmation_required_redirect
     
     def form_valid(self,form):
         form.instance.author=self.request.user
@@ -43,23 +52,40 @@ class ReviewCreateView(CreateView):
     
     def get_success_url(self):
         return reverse("review-detail",kwargs={"review_id":self.object.id})
-
-class ReviewUpdateView(UpdateView):
+    
+    def test_func(self,user):
+        return EmailAddress.objects.filter(user=user,verified=True).exists()
+            
+class ReviewUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model=Review
     form_class=ReviewForm
     template_name="coplate/review_form.html"
     pk_url_kwarg="review_id"
     
+    raise_exception=True
+    
+    
     def get_success_url(self):
         return reverse("review-detail",kwargs={"review_id":self.object.id})
+    
+    def test_func(self,user):
+        review=self.get_object()
+        return review.author == user
+            
 
-class ReviewDeleteView(DeleteView):
+class ReviewDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
     model=Review
     template_name="coplate/review_confirm_delete.html"
     pk_url_kwarg="review_id"
     
+    raise_exception=True
+    
     def get_success_url(self):
         return reverse("index")
+    
+    def test_func(self,user):
+        review=self.get_object()
+        return review.author == user
 
 class CustomPasswordChangeView(PasswordChangeView):
     #get_success_url:성공적으로 처리되면 어디로 리디렉션 할지 정해주는 함수
