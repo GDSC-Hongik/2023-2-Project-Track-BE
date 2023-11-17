@@ -9,19 +9,25 @@ def contains_special_character(value):
     return False
 
 
-# 실습으로 완성해 주세요
 def contains_uppercase_letter(value):
-    return True
+    for char in value:
+        if char.isupper():
+            return True
+    return False
 
 
-# 실습으로 완성해 주세요
 def contains_lowercase_letter(value):
-	return True
+    for char in value:
+        if char.islower():
+            return True
+    return False
 
 
-# 실습으로 완성해 주세요
 def contains_number(value):
-    return True
+    for char in value:
+        if char.isnumeric():
+            return True
+    return False
 
 
 class CustomPasswordValidator:
