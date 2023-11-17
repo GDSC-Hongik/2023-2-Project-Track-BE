@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    
+    #템플릿 오버라이딩을 하려면 꼭 coplate를 이 allauth 보다 위쪽에 써줘야 함(그래야 allauth의 signup.html이 아니라 coplate의 signup.html사용가능)
+    #account의 signup.html을 오버라이딩함. (allauth 와 이름 같아야함)
     'coplate',
+    'widget_tweaks', #input태그를 수정하기 위해 만들어진 패키지
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -158,6 +162,7 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET=True
 #인증 완료 페이지로 리디렉션
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL="account_email_confirmation_done"
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL="account_email_confirmation_done"
+ACCOUNT_EMAIL_SUBJECT_PREFIX="" #앞에 붙는 도메인 제거하는 세팅
 
 #email settings
 EMAIL_BACKEND="django.core.mail.backends.console.EmailBackend"
