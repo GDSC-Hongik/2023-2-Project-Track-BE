@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'coplate',
+    
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -42,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'coplate',
 ]
 
 SITE_ID = 1
