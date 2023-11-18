@@ -7,7 +7,11 @@ from django.urls import reverse
 from .models import Post
 from .forms import PostForm
 
-class IndexRedirectView(RedirectView): # 오히려 함수형 view가 가독성 좋은 경우
+# def index(request):
+#     return redirect('post-list')
+
+# 오히려 함수형 view가 가독성 좋은 경우
+class IndexRedirectView(RedirectView):
     pattern_name = 'post-list'
 
 class PostListView(ListView):

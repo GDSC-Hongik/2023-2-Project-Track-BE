@@ -3,13 +3,13 @@ from .models import Post
 from .validators import validate_symbols
 from django.core.exceptions import ValidationError
 
-# 기본적으로 CharField의 경우 한줄입력을 받는 widget이 default임. model 작성 양식과 거의 비슷한듯.
+# 그냥 form이 아니라 modelForm을 사용하였다. 기본 틀이 form과 model이 비슷하기 때문이다.
 class PostForm(forms.ModelForm):
     # memo = forms.CharField(max_length=80,validators=[validate_symbols])
     class Meta:
         model = Post
         fields = ['title','content'] # '__all__'을 하면 모든 필드 선택됨
-        widgets = {
+        widgets = { # 각 field의 위젯을 설정
             'title': forms.TextInput(attrs={
                 'class':'title',
                 'placeholder':'제목을 입력하세요'}),

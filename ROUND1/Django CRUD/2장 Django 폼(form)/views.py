@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Post
 from .forms import PostForm
 
-# Create your views here.
+# 여기 있는 view는 모두 함수형 view이다. 4장에서 클래스형 view를 구현해서 더 간단하게 표현이 가능하다.
 def post_list(request):
     posts = Post.objects.all()
     context = {'posts':posts}
