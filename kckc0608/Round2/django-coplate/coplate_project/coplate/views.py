@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Review
+from .forms import ReviewForm
 from allauth.account.views import PasswordChangeView
 
 
@@ -22,4 +23,8 @@ class ReviewDetailView(DetailView):
   model = Review
   template_name = "coplate/review_detail.html"
   pk_url_kwarg = "review_id"
-  
+
+class ReviewCreateView(CreateView):
+  model = Review
+  form_class = ReviewForm
+  template_name = "coplate/review_form.html"
