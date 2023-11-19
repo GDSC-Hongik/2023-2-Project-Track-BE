@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from .models import Review
 from allauth.account.views import PasswordChangeView
 
@@ -16,3 +16,10 @@ class IndexView(ListView):
 class CustomPasswordChangeView(PasswordChangeView):
   def get_success_url(self):
     return reverse("index")
+
+
+class ReviewDetailView(DetailView):
+  model = Review
+  template_name = "coplate/review_detail.html"
+  pk_url_kwarg = "review_id"
+  
