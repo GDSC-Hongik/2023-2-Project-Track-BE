@@ -29,7 +29,7 @@ class Review(models.Model):
     (4, 4),
     (5, 5),
   ]
-  raiting = models.IntegerField(choices=RATING_CHOICES)
+  rating = models.IntegerField(choices=RATING_CHOICES)
   
   image1 = models.ImageField(upload_to="review_pics")
   image2 = models.ImageField(upload_to="review_pics", blank=True)
