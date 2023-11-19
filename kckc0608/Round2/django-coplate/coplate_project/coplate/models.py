@@ -37,3 +37,8 @@ class Review(models.Model):
   content = models.TextField()
   dt_created = models.DateTimeField(auto_now_add=True)
   dt_updated = models.DateTimeField(auto_now=True)
+  
+  author = models.ForeignKey(User, on_delete=models.CASCADE)
+  
+  def __str__(self) -> str:
+     return self.title
