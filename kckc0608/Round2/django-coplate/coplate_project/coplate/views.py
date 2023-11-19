@@ -4,11 +4,6 @@ from django.views.generic import ListView
 from .models import Review
 from allauth.account.views import PasswordChangeView
 
-# Create your views here.
-def index(request):
-  print(request.user.is_authenticated)
-  return render(request, "coplate/index.html")
-
 
 class IndexView(ListView):
   model = Review
@@ -16,7 +11,6 @@ class IndexView(ListView):
   context_object_name = "reviews"
   paginate_by = 4
   ordering = ["-dt_created"]
-   
 
 
 class CustomPasswordChangeView(PasswordChangeView):
