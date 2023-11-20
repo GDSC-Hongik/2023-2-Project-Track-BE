@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Review
 from .forms import ReviewForm
 from allauth.account.views import PasswordChangeView
+from braces.views import LoginRequiredMixin
 
 
 class IndexView(ListView):
@@ -24,7 +25,7 @@ class ReviewDetailView(DetailView):
   template_name = "coplate/review_detail.html"
   pk_url_kwarg = "review_id"
 
-class ReviewCreateView(CreateView):
+class ReviewCreateView(LoginRequiredMixin, CreateView):
   model = Review
   form_class = ReviewForm
   template_name = "coplate/review_form.html"
