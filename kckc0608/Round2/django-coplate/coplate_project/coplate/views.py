@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import Review
 from .forms import ReviewForm
 from allauth.account.views import PasswordChangeView
@@ -35,4 +35,13 @@ class ReviewCreateView(CreateView):
   
   def get_success_url(self):
     return reverse("review-detail", kwargs={"review_id": self.object.id})
-  
+
+
+class ReviewUpdateView(UpdateView):
+  model = Review
+  form_class = ReviewForm
+  template_name = "coplate/review_form.html"
+  pk_url_kwarg = "review_id"
+
+  def get_success_url(self):
+    return reverse("review-detail", kwargs={"review_id": self.object.id})
