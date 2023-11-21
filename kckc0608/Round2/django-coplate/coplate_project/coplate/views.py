@@ -1,7 +1,8 @@
+from typing import Any
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Review
+from .models import Review, User
 from .forms import ReviewForm
 from allauth.account.views import PasswordChangeView
 from allauth.account.models import EmailAddress
@@ -77,3 +78,15 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   def test_func(self, user):
     review = self.get_object()
     return review.author == user
+  
+class ProfileView(DetailView):
+  model = User
+  template_name = "coplate/profile.html"
+  pk_url_kwarg = "user_id"
+  context_object_name = "profile_user"
+
+  def get_context_data(self, **kwargs: Any):
+    context = super().get_context_data(**kwargs)
+    user_id = self.kwargs.get("user_id")
+    context["user_reviews"] = Review.objects.filter(author__id=user_id).order_by("-dt_created")[:4]
+    return context
