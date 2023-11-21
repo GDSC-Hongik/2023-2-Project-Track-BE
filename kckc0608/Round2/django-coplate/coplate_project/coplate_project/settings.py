@@ -134,7 +134,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ACCOUNT_SIGNUP_REDIRECT_URL = "index"
+ACCOUNT_SIGNUP_REDIRECT_URL = "profile-set"
 LOGIN_REDIRECT_URL = "index"
 LOGIN_URL = "account_login" # braces mixin 에서 로그인 필요시 로그인 화면으로 리다이렉트 시킬 URL
 ACCOUNT_LOGOUT_ON_GET = True # 로그아웃 시, 확인 페이지 없이 바로 로그아웃
@@ -142,7 +142,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SESSION_REMEMBER = True # 로그인 항상 유지
-ACCOUNT_SIGNUP_FORM_CLASS = "coplate.forms.SignupForm"
+# ACCOUNT_SIGNUP_FORM_CLASS = "coplate.forms.SignupForm"
 ACCOUNT_PASSWORD_INPUT_RENDER_VALUE = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL="account_email_confirmation_done"

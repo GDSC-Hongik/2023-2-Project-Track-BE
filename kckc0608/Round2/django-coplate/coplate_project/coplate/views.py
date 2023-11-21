@@ -1,10 +1,11 @@
 from typing import Any
+from django.db import models
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Review, User
-from .forms import ReviewForm
+from .forms import ReviewForm, ProfileForm
 from allauth.account.views import PasswordChangeView
 from allauth.account.models import EmailAddress
 from braces.views import LoginRequiredMixin, UserPassesTestMixin
@@ -107,3 +108,15 @@ class UserReviewListView(ListView):
     context = super().get_context_data(**kwargs)
     context["profile_user"] = get_object_or_404(User, id=self.kwargs.get("user_id"))
     return context
+
+
+class ProfileSetView(LoginRequiredMixin, UpdateView):
+  model = User
+  form_class = ProfileForm
+  template_name = "coplate/profile_set_form.html"
+
+  def get_object(self, queryset=None):
+    return self.request.user
+
+  def get_success_url(self):
+    return reverse("index")
