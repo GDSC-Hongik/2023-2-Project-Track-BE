@@ -1,5 +1,6 @@
 from typing import Any
-from django.shortcuts import render
+from django.db.models.query import QuerySet
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Review, User
@@ -89,4 +90,20 @@ class ProfileView(DetailView):
     context = super().get_context_data(**kwargs)
     user_id = self.kwargs.get("user_id")
     context["user_reviews"] = Review.objects.filter(author__id=user_id).order_by("-dt_created")[:4]
+    return context
+
+
+class UserReviewListView(ListView):
+  model = Review
+  template_name = "coplate/user_review_list.html"
+  context_object_name = "user_reviews"
+  paginate_by = 4
+
+  def get_queryset(self):
+    user_id = self.kwargs.get("user_id")
+    return Review.objects.filter(author__id=user_id).order_by("-dt_created")
+
+  def get_context_data(self, **kwargs: Any):
+    context = super().get_context_data(**kwargs)
+    context["profile_user"] = get_object_or_404(User, id=self.kwargs.get("user_id"))
     return context

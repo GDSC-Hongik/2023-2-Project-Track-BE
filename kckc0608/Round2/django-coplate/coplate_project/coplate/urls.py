@@ -16,4 +16,5 @@ urlpatterns = [
     ),
     path("reviews/<int:review_id>/delete/", views.ReviewDeleteView.as_view(), name='review-delete'),
     path("users/<int:user_id>/", views.ProfileView.as_view(), name="profile"),
+    path("users/<int:user_id>/reviews/", views.UserReviewListView.as_view(),name="user-review-list"),
 ]
