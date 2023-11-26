@@ -21,7 +21,15 @@ class CommentAdmin(admin.ModelAdmin):
         LikeInline,
     )
 
+class UserInline(admin.StackedInline):
+    model = User.following.through # 다대다 관계에서 유저 자체를 설정하려는 경우
+    fk_name = "to_user"
+    verbose_name = "Follower"
+    verbose_name_plural = "Followers"
+    
+
 UserAdmin.fieldsets += ('Custom fields', {'fields': ('nickname', 'profile_pic', 'intro', 'following',)}),
+UserAdmin.inlines = (UserInline,)
 
 admin.site.register(User, UserAdmin)
 
