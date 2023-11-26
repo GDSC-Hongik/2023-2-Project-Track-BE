@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from .validators import validate_no_special_characters, validate_restaurant_link
 
@@ -70,3 +72,20 @@ class Comment(models.Model):
     
     def __str__(self) -> str:
         return self.content[:30]
+    
+    
+class Like(models.Model):
+    dt_created = models.DateTimeField(auto_now_add=True)
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    
+    object_id = models.PositiveIntegerField()
+    
+    # liked_object = GenericForeignKey('content_type', 'object_id')
+    # content_type, object_id 라는 이름을 사용하는 경우, 생략 가능.
+    liked_object = GenericForeignKey()
+    
+    def __str__(self) -> str:
+        return f"({self.user}, {self.liked_object})"
