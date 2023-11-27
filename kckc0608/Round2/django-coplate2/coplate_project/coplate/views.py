@@ -9,14 +9,11 @@ from django.views.generic import (
     DeleteView
 )
 
-from braces.views import LoginRequiredMixin, UserPassesTestMixin
-
+from braces.views import LoginRequiredMixin
 from allauth.account.views import PasswordChangeView
-from allauth.account.models import EmailAddress
-
 from .models import Review, User, Comment
 from .forms import ReviewForm, ProfileForm, CommentForm
-from .functions import confirmation_required_redirect
+from .mixins import LoginAndVerificationRequiredMixin, LoginAndOwnershipRequiredMixin
 
 
 class IndexView(View):
@@ -46,13 +43,10 @@ class ReviewDetailView(DetailView):
     
 
 
-class ReviewCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class ReviewCreateView(LoginAndVerificationRequiredMixin, CreateView):
     model = Review
     form_class = ReviewForm
     template_name = 'coplate/review_form.html'
-
-    redirect_unauthenticated_users = True
-    raise_exception = confirmation_required_redirect
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -60,51 +54,31 @@ class ReviewCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse('review-detail', kwargs={'review_id': self.object.id})
- 
-    def test_func(self, user):
-        return EmailAddress.objects.filter(user=user, verified=True).exists()
         
 
-class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ReviewUpdateView(LoginAndOwnershipRequiredMixin, UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = 'coplate/review_form.html'
     pk_url_kwarg = 'review_id'
 
-    redirect_unauthenticated_users = False
-    raise_exception = True
-
     def get_success_url(self):
         return reverse('review-detail', kwargs={'review_id': self.object.id})
 
-    def test_func(self, user):
-        review = self.get_object()
-        return review.author == user
 
-
-class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ReviewDeleteView(LoginAndOwnershipRequiredMixin, DeleteView):
     model = Review
     template_name = 'coplate/review_confirm_delete.html'
     pk_url_kwarg = 'review_id'
 
-    redirect_unauthenticated_users = False
-    raise_exception = True
-
     def get_success_url(self):
-        return reverse('index') 
-
-    def test_func(self, user):
-        review = self.get_object()
-        return review.author == user
+        return reverse('index')
 
 
-class CommentCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class CommentCreateView(LoginAndVerificationRequiredMixin, CreateView):
     http_method_names = ['post']
     model = Comment
     form_class = CommentForm
-
-    redirect_unauthenticated_users = True
-    raise_exception = confirmation_required_redirect
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -113,9 +87,6 @@ class CommentCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse('review-detail', kwargs={'review_id': self.kwargs.get('review_id')})
-
-    def test_func(self, user):
-        return EmailAddress.objects.filter(user=user, verified=True).exists()
 
 
 class ProfileView(DetailView):
