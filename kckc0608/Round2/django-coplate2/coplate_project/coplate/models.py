@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from .validators import validate_no_special_characters, validate_restaurant_link
-
 
 class User(AbstractUser):
     nickname = models.CharField(
@@ -55,6 +54,8 @@ class Review(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    likes = GenericRelation('Like', related_query_name='review')
+
     def __str__(self):
         return self.title
     
@@ -71,7 +72,9 @@ class Comment(models.Model):
     
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+
+    likes = GenericRelation('Like', related_query_name='comment')
     
     def __str__(self) -> str:
         return self.content[:30]
