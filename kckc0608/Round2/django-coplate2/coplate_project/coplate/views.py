@@ -41,6 +41,12 @@ class ReviewDetailView(DetailView):
         context["form"] = CommentForm()
         context["review_ctype_id"] = ContentType.objects.get(model='review').id
         context["comment_ctype_id"] = ContentType.objects.get(model='comment').id
+
+        user = self.request.user
+        if user.is_authenticated:
+            review = self.object
+            context["likes_review"] = Like.objects.filter(user=user, review=review).exists()
+            context["liked_comments"] = Comment.objects.filter(review=review).filter(likes__user=user)
         return context
     
 

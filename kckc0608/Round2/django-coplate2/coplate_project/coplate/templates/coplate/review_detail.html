@@ -48,7 +48,11 @@
           <form action="{% url "process-like" review_ctype_id review.id %}" method="post">
             {% csrf_token %}
             <button class="like-button" type="submit">
-              <img width="21px" src="{% static 'coplate/icons/ic-heart.svg' %}" alt="like icon">
+              {% if likes_review %}
+                <img width="16px" src="{% static 'coplate/icons/ic-heart-orange.svg' %}" alt="filled like icon">
+              {% else %}
+                <img width="16px" src="{% static 'coplate/icons/ic-heart.svg' %}" alt="like icon">
+              {% endif %}
               <span> 좋아요 {{ review.likes.count }}</span>
             </button>
           </form>
@@ -106,7 +110,11 @@
                 <form action="{% url "process-like" comment_ctype_id comment.id %}" method="post">
                   {% csrf_token %}
                   <button class="like-button">
-                    <img width="16px" src="{% static 'coplate/icons/ic-heart.svg' %}" alt="like icon">
+                    {% if comment in liked_comments %}
+                      <img width="16px" src="{% static 'coplate/icons/ic-heart-orange.svg' %}" alt="filled like icon">
+                    {% else %}
+                      <img width="16px" src="{% static 'coplate/icons/ic-heart.svg' %}" alt="like icon">
+                    {% endif %}
                     <span> 좋아요 {{ comment.likes.count }}</span>
                   </button>
                 </form>
