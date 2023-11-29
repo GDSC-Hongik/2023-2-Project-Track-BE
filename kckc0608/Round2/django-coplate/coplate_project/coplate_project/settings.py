@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'coplate',
+    
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -42,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'coplate',
+    "widget_tweaks",
 ]
 
 SITE_ID = 1
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'coplate.middleware.ProfileSetupMiddleware',
 ]
 
 ROOT_URLCONF = 'coplate_project.urls'
@@ -117,6 +120,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/uploads/"
 
 # Auth Settings
 
@@ -130,21 +135,28 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ACCOUNT_SIGNUP_REDIRECT_URL = "index"
+ACCOUNT_SIGNUP_REDIRECT_URL = "profile-set"
 LOGIN_REDIRECT_URL = "index"
+LOGIN_URL = "account_login" # braces mixin 에서 로그인 필요시 로그인 화면으로 리다이렉트 시킬 URL
 ACCOUNT_LOGOUT_ON_GET = True # 로그아웃 시, 확인 페이지 없이 바로 로그아웃
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SESSION_REMEMBER = True # 로그인 항상 유지
-ACCOUNT_SIGNUP_FORM_CLASS = "coplate.forms.SignupForm"
+# ACCOUNT_SIGNUP_FORM_CLASS = "coplate.forms.SignupForm"
 ACCOUNT_PASSWORD_INPUT_RENDER_VALUE = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL="account_email_confirmation_done"
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL="account_email_confirmation_done"
 PASSWORD_RESET_TIMEOUT_DAYS = 3
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 # ACCOUNT_EMAIL_VARIFICATION = "optional"
 # SESSION_COOKIE_AGE = 3600
 
 # Email Settings
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "kckc0608@gmail.com"
+EMAIL_HOST_PASSWORD = "emim lxuc godj lnyy"
