@@ -37,11 +37,18 @@
         </a>
       </div>
       {% if user.is_authenticated and user != profile_user %}
-        <form class="follow-button" action="#" method="post">
+        <form class="follow-button" action="{% url "process-follow" profile_user.id %}" method="post">
           {% csrf_token %}
-          <button class="cp-button small" type="submit">
-            팔로우
-          </button>
+          {% if is_following %}
+            <button class="cp-button small secondary" type="submit">
+              언팔로우
+            </button>
+          {% else %}
+            <button class="cp-button small" type="submit">
+              팔로우
+            </button>
+          {% endif %}
+          
         </form>
       {% endif %}
     </div>
