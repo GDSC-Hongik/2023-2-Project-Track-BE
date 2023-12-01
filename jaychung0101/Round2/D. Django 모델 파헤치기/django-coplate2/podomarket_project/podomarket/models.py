@@ -28,21 +28,16 @@ class User(AbstractUser):
 
     profile_pic = models.ImageField(default='default_profile_pic.jpg', upload_to='profile_pics')
 
+    following = models.ManyToManyField('self', symmetrical=False)
+
     def __str__(self):
         return self.email
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=60)
 
     item_price = models.IntegerField(validators=[MinValueValidator(1)])
-
-    PRICE_RANGES = [
-        ('H', 'High'),
-        ('M', 'Medium'),
-        ('L', 'Low')
-    ]
-    item_price_range = models.CharField(max_length=10, choices=PRICE_RANGES, default=None, null=True)
 
     CONDITION_CHOICES = [
         ('새제품', '새제품'),
@@ -71,3 +66,18 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    content = models.TextField(max_length=500, blank=False)
+
+    dt_created = models.DateTimeField(auto_now_add=True)
+
+    dt_updated = models.DateTimeField(auto_now=True)
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.content[:30]
