@@ -63,3 +63,33 @@
       FROM member
     WHERE address LIKE '%고양%';
     ```
+
+- 여러 조건 걸기
+    ```
+    SELECT *
+      FROM member
+     WHERE address LIKE '서울%'
+       AND gender = 'm'
+       AND age between 25 and 29;
+    ```
+
+    ```
+    SELECT *
+      FROM member
+     WHERE MONTH(sign_up_day) BETWEEN 3 AND 5
+        OR MONTH(sign_up_day) BETWEEN 9 AND 11;
+    ```
+
+    ```
+    SELECT *
+      FROM member
+     WHERE MONTH(sign_up_day) BETWEEN 3 AND 5
+        OR MONTH(sign_up_day) BETWEEN 9 AND 11;
+    ```
+
+    ```
+    SELECT *
+      FROM member
+     WHERE (gender = 'm' AND height >= 180)
+        OR (gender = 'f' AND height >= 170)
+    ```
