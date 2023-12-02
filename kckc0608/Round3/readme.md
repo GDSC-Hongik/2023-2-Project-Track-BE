@@ -93,3 +93,35 @@
      WHERE (gender = 'm' AND height >= 180)
         OR (gender = 'f' AND height >= 170)
     ```
+
+- 데이터 정렬
+    ```
+    select *
+      from member
+     order by height;
+    ```
+    기본적으로 오름차순 정렬을 수행
+
+    ```
+    select *
+      from member
+     order by height desc;
+    ```
+    내림차순 정렬 시 desc 키워드 추가
+
+    ```
+    select *
+      from member
+     where gender = 'm'
+       and weight >= 70
+     order by height desc;
+    ```
+    조건을 걸은 결과에 정렬을 적용하려면 where 이후에 order by 사용
+
+    ```
+    select *
+      from member
+     order by year(sign_up_day) desc,  email asc;
+    ```
+    정렬시 정렬 조건을 여러개 둘 수 있다.   
+    먼저 쓴 값을 기준으로 정렬하고, 그 값이 같으면 뒤의 기준으로 정렬한다.
