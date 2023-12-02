@@ -125,3 +125,21 @@
     ```
     정렬시 정렬 조건을 여러개 둘 수 있다.   
     먼저 쓴 값을 기준으로 정렬하고, 그 값이 같으면 뒤의 기준으로 정렬한다.
+
+- 데이터 일부만 보여주기
+    ```
+    select *
+      from member
+     order by sign_up_day desc
+     limit 10;
+    ```
+    정렬 후 10개 보여주기
+
+    ```
+    select *
+      from member
+     order by sign_up_day desc
+     limit 8, 2;
+    ```
+    정렬 후 인덱스 8부터 2개 보여주기   
+    즉, 9번재 10번째 보여주기
