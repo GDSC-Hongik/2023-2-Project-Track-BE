@@ -47,3 +47,19 @@
       FROM member
      WHERE sign_up_day BETWEEN '2018-01-01' AND '2018-12-31';
     ```
+
+- 문자열 패턴 조건
+
+    주소의 값이 '서울'로 시작하는 문자열
+    ```
+    SELECT *
+      FROM member
+    WHERE address LIKE '서울%';
+    ```
+
+    주소의 값에 '고양'로 포함되는 문자열
+    ```
+    SELECT *
+      FROM member
+    WHERE address LIKE '%고양%';
+    ```
