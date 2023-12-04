@@ -19,7 +19,7 @@ class User(AbstractUser):
 
     intro = models.CharField(max_length=60, blank=True)
 
-    following = models.ManyToManyField('self', symmetrical=False)
+    following = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     def __str__(self):
         return self.email
@@ -57,6 +57,9 @@ class Review(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        ordering = ['-dt_created']
 
 
 class Comment(models.Model):
@@ -73,9 +76,20 @@ class Comment(models.Model):
     def __str__(self):
         return self.content[:30]
     
+    class Meta:
+        ordering = ['-dt_created']
+    
 
 class Like(models.Model):
     dt_created = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+
+    object_id = models.PositiveIntegerField()
+
+    liked_object = GenericForeignKey()
+
+    def __str__(self):
+        return f"({self.user}, {self.liked_object})"
