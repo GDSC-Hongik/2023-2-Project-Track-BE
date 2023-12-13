@@ -203,3 +203,34 @@ SELECT AVG(column)
 ```
 
 column 의 데이터들의 평균. 이때 NULL은 제외한다.
+
+# IS NULL / IS NOT NULL
+
+```
+SELECT *
+  FROM member
+ WHERE address IS NULL
+```
+
+데이터가 NULL 인 row 만 조회  
+'= NULL' 로 쓸 수 없다. NULL 은 비교할 수 있는 값이 아니기 때문이다.
+
+```
+SELECT *
+  FROM member
+ WHERE address IS NOT NULL
+```
+
+데이터가 NULL 이 아닌 ROW 만 조회
+
+# COALESCE
+
+NULL 데이터를 원하는 방식으로 출력하는 함수다.
+
+```
+SELECT coalesce(height, '####')
+  FROM member;
+```
+
+이 쿼리를 실행하면 Null 값은 모두 #### 으로 보인다.  
+첫번째 인자에는 column 이름을, 2번째 인자에는 Null 값을 표현할 문자열을 넘긴다.
