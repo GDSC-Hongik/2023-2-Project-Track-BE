@@ -234,3 +234,52 @@ SELECT coalesce(height, '####')
 
 이 쿼리를 실행하면 Null 값은 모두 #### 으로 보인다.  
 첫번째 인자에는 column 이름을, 2번째 인자에는 Null 값을 표현할 문자열을 넘긴다.
+
+# Column 조작하기
+
+- column 간 산술 연산
+
+  ```
+  SELECT weight/((height/100)*(height/100))
+    FROM member
+  ```
+
+  BMI 구하기  
+  height와 weight 중 하나라도 Null이 있으면 결과 값도 Null 이다.
+
+- Column 명 바꾸기 (Alias)
+
+  ```
+  SELECT weight/((height/100)*(height/100)) AS BMI
+    FROM member
+  ```
+
+  ```
+  SELECT weight/((height/100)*(height/100)) BMI
+    FROM member
+  ```
+
+  `AS`를 붙이지 않고 그냥 한칸 띄우고 써도 된다.
+
+- CONCAT 함수와 같이 사용하기
+
+  ```
+  SELECT CONCAT(height, 'cm', ', ', weight, 'kg') AS 'height and wieght'
+    FROM member
+  ```
+
+- CASE 문을 사용해서 값을 조건 기준으로 통일해서 표시하기
+  ```
+  SELECT
+    email,
+    CONCAT(height, 'cm', ', ', weight, 'kg') AS 'height and wieght',
+    weight / ((height / 100) * (height / 100)) AS BMI,
+  CASE
+      WHEN weight IS NULL OR height is NULL THEN 'dont know'
+      WHEN weight / ((height / 100) * (height / 100)) >= 25 THEN 'high!!'
+      WHEN weight / ((height / 100) * (height / 100)) >= 18.5 AND weight / ((height / 100) * (height / 100)) < 25 THEN 'good'
+      ELSE 'low!!'
+  END as bmi_check
+    FROM member
+  ORDER BY bmi_check asc
+  ```
