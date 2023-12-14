@@ -283,3 +283,74 @@ SELECT coalesce(height, '####')
     FROM member
   ORDER BY bmi_check asc
   ```
+
+# 중복값 제거
+
+```
+SELECT DISTINCT(gender)
+  FROM member
+```
+
+```
+SELECT DISTINCT(SUBSTRING(address, 1, 2))
+  FROM member
+```
+
+substring 을 이용해 column에 연산을 수행하고, 그 결과값에 대해 다시 중복값 제거를 수행할 수 있다.
+
+# Group By
+
+```
+select gender, count(*), avg(height), min(weight)
+  from member
+ group by gender;
+```
+
+특정 column의 값 종류(distinct)로 묶은 그룹들을 생성한다.  
+집계함수(count, min, avg, ...) 는 각 그룹마다 나눠서 실행된다.
+
+```
+SELECT
+  SUBSTRING(address, 1, 2) as region,
+  count(*)
+  FROM member
+ GROUP BY SUBSTRING(address, 1, 2)
+```
+
+그루핑할 컬럼은 가공된 값이어도 된다.
+
+```
+SELECT
+  SUBSTRING(address, 1, 2) as region,
+  gender,
+  count(*)
+  FROM member
+ GROUP BY SUBSTRING(address, 1, 2), gender
+```
+
+그루핑 기준은 여러개가 될 수 있다.  
+위와 같이 쓰면, 주소의 앞 2자리가 같으면서 같은 성별인 사람들끼리 그룹이 지어진다.
+
+```
+SELECT
+  SUBSTRING(address, 1, 2) as region,
+  gender,
+  count(*)
+  FROM member
+ GROUP BY SUBSTRING(address, 1, 2), gender
+HAVING region = '서울' and gender = 'm'
+```
+
+이렇게 `HAVING` 구문을 이용하면, 그루핑된 그룹들 중 조건에 맞는 그룹만 고를 수 있다.
+
+```
+SELECT
+  SUBSTRING(address, 1, 2) as region,
+  gender,
+  count(*)
+  FROM member
+ GROUP BY SUBSTRING(address, 1, 2), gender
+ ORDER BY region, gender
+```
+
+생성된 그룹에 대해서 아래와 같이 정렬도 할 수 있다.
