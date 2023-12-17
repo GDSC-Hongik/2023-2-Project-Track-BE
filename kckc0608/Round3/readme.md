@@ -383,3 +383,53 @@ SELECT
 
   이렇게 하면, max(price) 값을 column에 추가한다.   
   모든 row에서 같은 값으로 보인다.
+
+- WHERE 절에서 서브쿼리 사용하기
+  ```
+  SELECT
+         id,
+         name,
+         price,
+         (SELECT MAX(price) FROM item) AS max_price
+    FROM item
+   WHERE price > (SELECT AVG(price) FROM item)
+  ```
+  평균 가격보다 큰 가격을 가진 값들을 선택
+
+  ```
+  SELECT id, name, price
+    FROM item
+   WHERE price = (SELECT MAX(price) FROM item)
+  ```
+  가장 비싼 항목의 정보 출력
+
+- 서브쿼리가 여러개의 값을 반환하는 경우
+  ```
+    SELECT *
+      FROM item
+     WHERE id IN (
+      SELECT item_id
+        FROM review
+       GROUP BY item_id
+      HAVING COUNT(*) >= 3
+     )
+  ```
+  리뷰 테이블에서 item_id 가 같은 것끼리 그룹을 지어주고, 각 그룹에 대해 그룹 사이즈가 3이상 (즉, 리뷰가 3개 이상 존재하는 상품들)인 아이템의 id 를 반환하는 쿼리를 작성한다.   
+  이 쿼리 결과로 여러 아이디들이 나올 수 있는데, 그 아이디 리스트에 포함된 id만 골라서 select 하는 코드다.
+
+  지금은 IN 을 이용하였지만, ANY (그 중에 하나 이상에 대해 만족) 또는 ALL (모두에 대해 만족) 조건을 사용할 수도 있다.
+
+- 서브쿼리 결과 자체를 새로운 테이블로 보고 FROM 절에 사용하는 경우
+  ```
+  SELECT AVG(review_count)
+    FROM (
+      SELECT SUBSTRING(address, 1, 2) AS region, COUNT(*) AS review_count
+        FROM review AS r LEFT OUTER JOIN member AS m
+          ON r.mem_id = m.id
+       GROUP BY SUBSTRING(address, 1, 2)
+      HAVING region IS NOT NULL
+         AND region != '안드'
+    ) AS review_count_summary;
+  ```
+
+ 서브쿼리로 생성한 테이블을 유도된 테이블(derived table) 이라고 하는데, 반드시 이 테이블에는 alias를 붙여줘야 한다.
