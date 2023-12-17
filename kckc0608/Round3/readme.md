@@ -354,3 +354,32 @@ SELECT
 ```
 
 생성된 그룹에 대해서 아래와 같이 정렬도 할 수 있다.
+
+# Join
+
+# Sub Query
+- 평균값을 기준으로 쿼리 날리기
+  ```
+  SELECT i.id, i.name, AVG(star) AS avg_star
+    FROM item AS i LEFT OUTER JOIN review AS r
+      ON r.item_id = i.id
+  GROUP BY i.id, i.name
+  HAVING avg_star < (SELECT AVG(star) FROM review)
+  ORDER BY avg_star DESC
+  ```
+
+  쿼리 안에 또 쿼리가 들어있는 구조다.   
+  이때, 반드시 ( )로 서브 쿼리를 감싸주어야 함.
+
+- SELECT 절에서 서브쿼리 사용하기
+  ```
+  SELECT
+         id,
+         name,
+         price,
+         (SELECT MAX(price) FROM item) AS max_price
+    FROM item
+  ```
+
+  이렇게 하면, max(price) 값을 column에 추가한다.   
+  모든 row에서 같은 값으로 보인다.
