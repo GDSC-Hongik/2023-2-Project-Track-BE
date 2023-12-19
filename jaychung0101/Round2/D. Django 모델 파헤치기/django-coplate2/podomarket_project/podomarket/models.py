@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -30,7 +30,7 @@ class User(AbstractUser):
 
     profile_pic = models.ImageField(default='default_profile_pic.jpg', upload_to='profile_pics')
 
-    following = models.ManyToManyField('self', symmetrical=False, blank=True)
+    following = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='followers')
 
     def __str__(self):
         return self.email
@@ -58,7 +58,9 @@ class Post(models.Model):
 
     image3 = models.ImageField(upload_to='item_pics', blank=True)
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+
+    likes = GenericRelation('Like', related_query_name='post')
 
     dt_created = models.DateTimeField(auto_now_add=True)
 
@@ -82,7 +84,9 @@ class Comment(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+
+    likes = GenericRelation('Like', related_query_name='comment')
 
     def __str__(self):
         return self.content[:30]
