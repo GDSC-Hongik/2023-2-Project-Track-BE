@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.contenttypes.models import ContentType
 
 from allauth.account.models import EmailAddress
 from allauth.account.views import PasswordChangeView
@@ -10,7 +11,7 @@ from braces.views import LoginRequiredMixin, UserPassesTestMixin
 from .mixins import LoginAndVerificationRequiredMixin, LoginAndOwnershipRequiredMixin
 from .forms import PostCreateForm, PostUpdateForm, ProfileForm, CommentForm
 from .functions import confirmation_required_redirect
-from .models import Post, User, Comment
+from .models import Post, User, Comment, Like
 
 
 class IndexView(ListView):
@@ -31,7 +32,16 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
-        return context
+        context['post_ctype_id'] = ContentType.objects.get(model='post').id
+        context['comment_ctype_id'] = ContentType.objects.get(model='comment').id
+        
+        user = self.request.user
+        if user.is_authenticated:
+            post = self.object
+            context['likes_post'] = Like.objects.filter(user=user, post=post).exists()
+            context['liked_comments'] = Comment.objects.filter(post=post).filter(likes__user=user)
+
+        return context 
 
 
 class PostCreateView(LoginAndVerificationRequiredMixin, CreateView):
@@ -97,6 +107,21 @@ class CommentDeleteView(LoginAndOwnershipRequiredMixin, DeleteView):
     
     def get_success_url(self):
         return reverse('post-detail', kwargs={'post_id': self.object.post.id})
+
+
+class ProcessLikeView(LoginAndVerificationRequiredMixin, View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        like, created = Like.objects.get_or_create(
+            user=self.request.user,
+            content_type_id=self.kwargs.get('content_type_id'),
+            object_id=self.kwargs.get('object_id'),
+        )
+        if not created:
+            like.delete()
+
+        return redirect(self.request.META['HTTP_REFERER'])
 
 
 class ProfileView(DetailView):
