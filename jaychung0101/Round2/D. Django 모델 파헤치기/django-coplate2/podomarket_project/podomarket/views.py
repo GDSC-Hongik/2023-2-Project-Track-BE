@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 
-from allauth.account.models import EmailAddress
 from allauth.account.views import PasswordChangeView
 
 from braces.views import LoginRequiredMixin, UserPassesTestMixin
@@ -22,6 +22,48 @@ class IndexView(ListView):
 
     def get_queryset(self):
         return Post.objects.filter(is_sold=False)
+
+
+class WishlistView(LoginRequiredMixin, ListView):
+    model = Post
+    context_object_name = 'liked_posts'
+    template_name = 'podomarket/wishlist.html'
+    paginate_by = 8
+
+    def get_queryset(self):
+        return Post.objects.filter(likes__user=self.request.user)
+    
+
+class FollowingPostListView(LoginRequiredMixin, ListView):
+    model = Post
+    context_object_name = 'following_posts'
+    template_name = 'podomarket/following_post_list.html'
+    paginate_by = 8
+
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(is_sold=False).filter(author__followers=user)
+
+
+class SearchView(ListView):
+    model = Post
+    context_object_name = 'search_results'
+    template_name = 'podomarket/search_results.html'
+    paginate_by = 8
+
+    def get_queryset(self):
+        query = self.request.GET.get('query', '')
+        return Post.objects.filter(
+            is_sold=False
+        ).filter(
+            Q(title__icontains=query)
+            | Q(item_details__icontains=query)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('query', '')
+        return context
 
 
 class PostDetailView(DetailView):

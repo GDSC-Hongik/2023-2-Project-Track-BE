@@ -5,6 +5,9 @@ from . import views
 urlpatterns = [
     # posts
     path('', views.IndexView.as_view(), name='index'),
+    path('wishlist/', views.WishlistView.as_view(), name='wishlist'),
+    path('search/', views.SearchView.as_view(), name='search'),
+    path('posts/following/', views.FollowingPostListView.as_view(), name='following-post-list'),
     path('posts/<int:post_id>/', views.PostDetailView.as_view(), name='post-detail'),
     path('posts/new/', views.PostCreateView.as_view(), name='post-create'),
     path('posts/<int:post_id>/edit/', views.PostUpdateView.as_view(), name='post-update'),
