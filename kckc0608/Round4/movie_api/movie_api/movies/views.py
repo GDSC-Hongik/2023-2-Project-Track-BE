@@ -69,3 +69,26 @@ class MovieList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MovieDetail(APIView):
+    def get_object(self, pk):
+        movie = get_object_or_404(Movie, pk=pk)
+        return movie
+    
+    def get(self, request, pk):
+        movie = self.get_object(pk)
+        serializer = MovieSerializer(movie)
+        return Response(serializer.data)
+    
+    def patch(self, request, pk):
+        movie = self.get_object(pk)
+        serializer = MovieSerializer(movie, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        movie = self.get_object(pk)
+        movie.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
