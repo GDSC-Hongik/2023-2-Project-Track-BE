@@ -5,10 +5,11 @@ from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 from rest_framework.serializers import ValidationError
 
 class MovieSerializer(serializers.ModelSerializer):
-    movie_reviews = serializers.PrimaryKeyRelatedField(source='reviews', many=True, read_only=True)
+    # movie_reviews = serializers.PrimaryKeyRelatedField(source='reviews', many=True, read_only=True)
+    reviews = serializers.StringRelatedField(many=True)
     class Meta:
         model = Movie
-        fields = ['id', 'name', 'opening_date', 'running_time', 'overview', 'movie_reviews']
+        fields = ['id', 'name', 'opening_date', 'running_time', 'overview', 'reviews']
         # read_only_fields = ['reviews']
         validators = [
             UniqueTogetherValidator(
@@ -32,6 +33,8 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    movie = serializers.StringRelatedField()
+    
     class Meta:
         model = Review
         fields = ['id', 'movie', 'username', 'star', 'comment', 'created']
