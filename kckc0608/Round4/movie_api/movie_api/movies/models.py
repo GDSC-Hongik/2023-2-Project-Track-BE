@@ -8,7 +8,7 @@ class Movie(models.Model):
     overview = models.TextField()
 
 class Review(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
     username = models.CharField(max_length=30)
     star = models.IntegerField()
     comment = models.CharField(max_length=100)

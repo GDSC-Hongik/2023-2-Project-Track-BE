@@ -7,7 +7,8 @@ from rest_framework.serializers import ValidationError
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ['id', 'name', 'opening_date', 'running_time', 'overview']
+        fields = ['id', 'name', 'reviews', 'opening_date', 'running_time', 'overview']
+        read_only_fields = ['reviews']
         validators = [
             UniqueTogetherValidator(
                 queryset=Movie.objects.all(),
