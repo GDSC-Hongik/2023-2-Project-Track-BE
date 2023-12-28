@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import (
@@ -8,6 +10,7 @@ from django.views.generic import (
     UpdateView, 
     DeleteView
 )
+from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from braces.views import LoginRequiredMixin
 from allauth.account.views import PasswordChangeView
@@ -42,6 +45,27 @@ class FollowingReviewListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Review.objects.filter(author__followers=self.request.user)
+
+
+class SearchView(ListView):
+    model = Review
+    context_object_name = 'search_results'
+    template_name = 'coplate/search_results.html'
+    paginate_by = 8
+
+    def get_queryset(self):
+        query = self.request.GET.get('query', '')
+        print(query)
+        return Review.objects.filter(
+            Q(title__icontains=query)
+            | Q(restaurant_name__icontains=query)
+            | Q(content__icontains=query)
+        )
+
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('query', '')
+        return context
 
 
 class ReviewDetailView(DetailView):
