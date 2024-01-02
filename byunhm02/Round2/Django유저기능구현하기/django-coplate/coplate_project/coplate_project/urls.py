@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from coplate.views import CustomPasswordChangeView
 
@@ -26,8 +28,11 @@ urlpatterns = [
     
     #allauth
     #class view쓸 때는 as_view 필요
+    path("email-confirmation-required/",
+         TemplateView.as_view(template_name="account/email_confirmation_required.html"),
+         name="account_email_confirmation_required"),
     path("email-confirmation-done/",
-         TemplateView.as_view(template_name="coplate/email_confirmation_done.html"),
+         TemplateView.as_view(template_name="account/email_confirmation_done.html"),
          name="account_email_confirmation_done"),
     path(
         'password/change/',
@@ -36,3 +41,5 @@ urlpatterns = [
         ),
     path("", include('allauth.urls')),
 ]
+urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) #미디어 파일에 대한 요청이 들어오면 미디어 루트 안에 있는 미디어 파일을 돌려주라는 뜻
+
