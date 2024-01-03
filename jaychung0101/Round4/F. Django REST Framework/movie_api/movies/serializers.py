@@ -1,30 +1,27 @@
 from rest_framework import serializers
-from .models import Movie, Actor
+from .models import Movie, Actor, Review
 
-class MovieSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField()
-    opening_date = serializers.DateField()
-    running_time = serializers.IntegerField()
-    overview = serializers.CharField()
+class MovieSerializer(serializers.ModelSerializer):
+    actors = serializers.StringRelatedField(many=True, read_only=True)
 
-    def create(self, validated_data):
-        return Movie.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.opening_date = validated_data.get('opening_date', instance.opening_date)
-        instance.running_time = validated_data.get('running_time', instance.running_time)
-        instance.overview = validated_data.get('overview', instance.overview)
-        instance.save()
-        return instance
+    class Meta:
+        model = Movie
+        fields = ['id', 'name', 'reviews', 'actors', 'opening_date', 'running_time', 'overview']
+        read_only_fields = ['reviews']
     
 
-class ActorSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField()
-    gender = serializers.CharField()
-    birth_date = serializers.DateField()
+class ReviewSerializer(serializers.ModelSerializer):
+    movie = MovieSerializer(read_only=True)
+      
+    class Meta:
+        model = Review
+        fields = ['id', 'movie', 'username', 'star', 'comment', 'created']
 
-    def create(self, validated_data):
-        return Actor.objects.create(**validated_data)
+
+class ActorSerializer(serializers.ModelSerializer):
+    movies = MovieSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Actor
+        fields = ['id', 'name', 'gender', 'birth_date', 'movies']
+
