@@ -1,0 +1,23 @@
+{% extends "podomarket_base/base_with_navbar.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="post-list">
+  <div class="header">
+    <h2>중고 상품</h2>
+    <a class="link" href="{% url 'post-create' %}">
+      <img class="pen-icon" src="{% static 'podomarket/icons/ic-pen.svg' %}" alt="pen icon">
+      <span>글쓰기</span>
+    </a>
+  </div>
+  <form class="search-form" action="{% url "search" %}" method="get">
+    <input class="search-input" type="text" name="query" placeholder="검색어를 입력해주세요" required>
+    <button class="podo-button darkpurple" type="submit">검색</button>
+  </form>
+  {% include "components/post_list.html" with posts=posts %}
+  {% if is_paginated %}
+    {% include "components/pagination.html" with page_obj=page_obj %}
+  {% endif %}
+</div>
+{% endblock content %}
